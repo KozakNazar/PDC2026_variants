@@ -251,7 +251,7 @@ def main():
     
                 if matlab_code:                    
                     #  Створюємо шлях до файлу
-                    filename = f"PRO_LAB2_VARIANTSANDMATLAB/{year - 1}_{year}/KI{group}/MATLABscripts/l2_{year - 1}{year}_ki{group}_{variant_num}_MATLAB.m"
+                    filename = f"PRO_LAB2_VARIANTSANDMATLAB/{year - 1}_{year}/KI{group}/{year - 1}_{year}KI{group}_MATLABscripts/l2_{year - 1}{year}_ki{group}_{variant_num}_MATLAB.m"
                     path = Path(filename)
                     path.parent.mkdir(parents=True, exist_ok=True) # if path.parent != Path("."):
 
