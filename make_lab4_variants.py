@@ -35,7 +35,7 @@ def make_lab4_variants_and_save_in_docx(year, group, variant_count, output_file)
     # Перший рядок
     table.cell(0, 0).text = "Варіанти №"
     table.cell(0, 0).merge(table.cell(1, 0)) # Об'єднання сусідніх комірок першого стовпця у заголовку
-    table.cell(0, 1).text = "Граф що відображає конфігурацію зв'язків між процесами"
+    table.cell(0, 1).text = "Граф, що відображає конфігурацію зв'язків між процесами"
     table.cell(0, 1).merge(table.cell(0, 3)) # Інше об'єднання комірок для заголовку
     
     # Другий рядок - підзаголовки
