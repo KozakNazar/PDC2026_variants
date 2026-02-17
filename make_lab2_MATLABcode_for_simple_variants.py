@@ -123,7 +123,7 @@ def main():
     for year in range(YEAR_FIRST, YEAR_LAST + 1):
         for group in range(GROUP_FIRST, GROUP_LAST + 1):    
             # Створюємо нові варіанти
-            variants = variants_ #lab2_variants_redef(variants_, year, group, True)
+            variants = lab2_variants_redef(variants_, year, group, True)
     
             if not variants:
                 print("Не знайдено варіантів у файлі")

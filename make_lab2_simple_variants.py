@@ -88,7 +88,7 @@ if __name__ == "__main__":
     for year in range(YEAR_FIRST, YEAR_LAST + 1):
         for group in range(GROUP_FIRST, GROUP_LAST + 1):
             # Створюємо нові варіанти
-            variants = variants_#lab2_variants_redef(variants_, year, group, True)
+            variants = lab2_variants_redef(variants_, year, group, True)
             
             # Створюємо шлях до файлу
             filename = "PRO_LAB2_VARIANTSANDMATLAB/" + str(year - 1) + "_" + str(year) + "/KI" + str(group) + "/l2_variants_ki" + str(group) + "_" + str(year - 1) + str(year) + ".docx"
