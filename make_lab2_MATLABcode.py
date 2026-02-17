@@ -5,22 +5,7 @@
 import re
 from pathlib import Path
 
-from make_labs_common_functions import replace_skip, parse_variants_file, lab2_variants_redef
-
-def convert_MATLAB_formula(formula):
-    formula = formula.replace('_{1}', '1')#.replace('_1', '1')
-    formula = formula.replace('_{2}', '2')#.replace('_2', '2')
-    formula = formula.replace('_{3}', '3')#.replace('_3', '3')
-    formula = formula.replace('^{2}', '^2')
-    formula = formula.replace('^{3}', '^3')
-    formula = formula.replace('^{4}', '^4')
-    formula = formula.replace('_{i}', '(i)')#.replace('_i', '(i)')
-    formula = formula.replace('_{j}', '(j)')#.replace('_j', '(j)')
-    formula = formula.replace('_{ij}', '(i,j)')#.replace('_ij', '(i,j)')
-    formula = formula.replace('_{2ij}', '2(i,j)')#.replace('_2ij', '2(i,j)')
-    formula = formula.replace("^{'}", "'")
-    
-    return formula
+from make_labs_common_functions import replace_skip, convert_MATLAB_formula, parse_variants_file, lab2_variants_redef
 
 def make_lab2_matlab_script(variants_data, year, group, variant_number):
     variant = None
@@ -143,7 +128,7 @@ else
     b1 = randi([1, 9], n, 1);
     c1 = randi([1, 9], n, 1);
     
-    disp('Згенеровані матриці:');
+    disp('Згенеровані матриці та вектори:');
     disp('A = '); disp(A);
     disp('A1 = '); disp(A1);
     disp('A2 = '); disp(A2);
@@ -234,12 +219,12 @@ def main():
     LAB2_VARIANTS_DATA_FILE_NAME = "lab2_variants_data.txt"
 
     # Читаємо базові варіанти
-    variants = parse_variants_file(LAB2_VARIANTS_DATA_FILE_NAME)
+    variants_ = parse_variants_file(LAB2_VARIANTS_DATA_FILE_NAME)
 
     for year in range(YEAR_FIRST, YEAR_LAST + 1):
         for group in range(GROUP_FIRST, GROUP_LAST + 1):    
             # Створюємо нові варіанти
-            variants = lab2_variants_redef(variants, year, group)
+            variants = lab2_variants_redef(variants_, year, group)
     
             if not variants:
                 print("Не знайдено варіантів у файлі")
@@ -251,7 +236,7 @@ def main():
     
                 if matlab_code:                    
                     #  Створюємо шлях до файлу
-                    filename = f"PRO_LAB2_VARIANTSANDMATLAB/{year - 1}_{year}/KI{group}/{year - 1}_{year}KI{group}_MATLABscripts/l2_{year - 1}{year}_ki{group}_{variant_num}_MATLAB.m"
+                    filename = f"PRO_LAB2_VARIANTSANDMATLAB/{year - 1}_{year}/KI{group}/{year - 1}{year}_KI{group}_MATLABscripts/l2_{year - 1}{year}_ki{group}_{variant_num}_MATLAB.m"
                     path = Path(filename)
                     path.parent.mkdir(parents=True, exist_ok=True) # if path.parent != Path("."):
 

@@ -19,7 +19,45 @@ def replace_skip(text, old, new, skip=0, count=None):
     
     return re.sub(re.escape(old), repl, text)
 
-def parse_variants_file(filename):
+def convert_to_math_unicode_formula(text, useTSymbol=False, useStarSymbol=True):
+    if not useStarSymbol:
+        text = text.replace(' * ', '')
+        text = text.replace(' *', '')
+        text = text.replace('* ', '')
+        text = text.replace('*', '')
+    text = text.replace('_{1}', '₁')#.replace('_1', '₁')
+    text = text.replace('_{2}', '₂')#.replace('_2', '₂')
+    text = text.replace('_{3}', '₃')#.replace('_3', '₃')
+    text = text.replace('^{2}', '²')#.replace('^2', '²')
+    text = text.replace('^{3}', '³')#.replace('^3', '³')
+    text = text.replace('^{4}', '⁴')#.replace('^4', '⁴')
+    text = text.replace('_{i}', 'ᵢ')#.replace('_i', 'ᵢ')
+    text = text.replace('_{j}', 'ⱼ')#.replace('_j', 'ⱼ')
+    text = text.replace('_{ij}', 'ᵢⱼ')#.replace('_ij', 'ᵢⱼ')
+    text = text.replace('_{2ij}', '₂ᵢⱼ')#.replace('_2ij', '₂ᵢⱼ')
+    if useTSymbol:
+        text = text.replace("^{'}", "ᵀ")
+    else:
+        text = text.replace("^{'}", "'")
+    
+    return text
+
+def convert_MATLAB_formula(formula):
+    formula = formula.replace('_{1}', '1')#.replace('_1', '1')
+    formula = formula.replace('_{2}', '2')#.replace('_2', '2')
+    formula = formula.replace('_{3}', '3')#.replace('_3', '3')
+    formula = formula.replace('^{2}', '^2')
+    formula = formula.replace('^{3}', '^3')
+    formula = formula.replace('^{4}', '^4')
+    formula = formula.replace('_{i}', '(i)')#.replace('_i', '(i)')
+    formula = formula.replace('_{j}', '(j)')#.replace('_j', '(j)')
+    formula = formula.replace('_{ij}', '(i,j)')#.replace('_ij', '(i,j)')
+    formula = formula.replace('_{2ij}', '2(i,j)')#.replace('_2ij', '2(i,j)')
+    formula = formula.replace("^{'}", "'")
+    
+    return formula
+
+def parse_variants_file(filename, simple_variants=False):
     variants = []
     with open(filename, 'r', encoding='utf-8') as f:
         for line in f:
@@ -28,28 +66,31 @@ def parse_variants_file(filename):
                 continue
             
             parts = line.split('|')
-            if len(parts) == 7:
+            if len(parts) >= 3:
                 number = int(parts[0])
                 formula = parts[1]
                 type_text = parts[2]
-                b_i = parts[3]
-                y2 = parts[4]
-                Y3 = parts[5]
-                C2_ij = parts[6]
-                
-                variants.append({
-                    'number': number,
-                    'formula': formula,
-                    'type': type_text,
+                if not simple_variants and len(parts) >= 7:
+                    b_i = parts[3]
+                    y2 = parts[4]
+                    Y3 = parts[5]
+                    C2_ij = parts[6]
+
+            variants.append({
+                'number': number,
+                'formula': formula,
+                'type': type_text,
+                **({} if simple_variants or len(parts) < 7 else {  # тут else логічний - це частина виразу
                     'b_i': b_i,
                     'y2': y2,
                     'Y3': Y3,
                     'C2_ij': C2_ij
                 })
+            })
                 
     return variants
 
-def lab2_variants_redef(variants_data, year, group):
+def lab2_variants_redef(variants_data, year, group, simple_variants=False):
     new_variants_data = variants_data
 
     param_Y_formula_and_type = 17 * (year - 2025);
@@ -63,10 +104,11 @@ def lab2_variants_redef(variants_data, year, group):
         new_variants_data[index]['number'] = variants_data[index]['number'];
         new_variants_data[index]['formula'] = variants_data[(index + param_Y_formula_and_type)%variant_count]['formula'];
         new_variants_data[index]['type'] = variants_data[(index + param_Y_formula_and_type)%variant_count]['type'];
-        new_variants_data[index]['b_i'] = variants_data[(index + param_Y_b_i)%variant_count]['b_i'];
-        new_variants_data[index]['y2'] = variants_data[(index + param_Y_y2)%variant_count]['y2'];
-        new_variants_data[index]['Y3'] = variants_data[(index + param_Y_Y3)%variant_count]['Y3'];
-        new_variants_data[index]['C2_ij'] = variants_data[(index + param_Y_C2_ij)%variant_count]['C2_ij'];
+        if not simple_variants:
+            new_variants_data[index]['b_i'] = variants_data[(index + param_Y_b_i)%variant_count]['b_i'];
+            new_variants_data[index]['y2'] = variants_data[(index + param_Y_y2)%variant_count]['y2'];
+            new_variants_data[index]['Y3'] = variants_data[(index + param_Y_Y3)%variant_count]['Y3'];
+            new_variants_data[index]['C2_ij'] = variants_data[(index + param_Y_C2_ij)%variant_count]['C2_ij'];
         
     param_G_A = (group - 300) & 1;
     param_G_B = ((group - 300) & 2) >> 1; # !
@@ -74,12 +116,17 @@ def lab2_variants_redef(variants_data, year, group):
     param_G_D = ((group - 300) & 8) >> 3; # !
 
     for v in new_variants_data:
-        v['formula'] = replace_skip(v['formula'], '^{2}', '^{2_}', param_G_A, 2 - param_G_B);
-        v['formula'] = replace_skip(v['formula'], '^{3}', '^{2}', param_G_A, 2 - param_G_B);
+        v['formula'] = replace_skip(v['formula'], '^{2}', '^{2_}', 1 - param_G_A, 2 - param_G_A);
+        v['formula'] = replace_skip(v['formula'], '^{3}', '^{2}', 1 - param_G_A, 2 - param_G_A);
         v['formula'] = replace_skip(v['formula'], '^{2_}', '^{3}');
+
+        if simple_variants:
+            v['formula'] = replace_skip(v['formula'], '_{1}', '_{1_}', 1 - param_G_B, 2 - param_G_B);
+            v['formula'] = replace_skip(v['formula'], '_{2}', '_{1}', 1 - param_G_B, 2 - param_G_B);
+            v['formula'] = replace_skip(v['formula'], '_{1_}', '_{2}');
         
-        v['formula'] = replace_skip(v['formula'], '+', '+_', param_G_C, 2 - param_G_D);
-        v['formula'] = replace_skip(v['formula'], '+-', '+', param_G_C, 2 - param_G_D);
+        v['formula'] = replace_skip(v['formula'], '+', '+_', 1 - param_G_C, 2 - param_G_D);
+        v['formula'] = replace_skip(v['formula'], '-', '+', 1 - param_G_C, 2 - param_G_D);
         v['formula'] = replace_skip(v['formula'], '+_', '-');
 
     return new_variants_data

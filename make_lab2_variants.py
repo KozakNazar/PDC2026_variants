@@ -7,23 +7,7 @@ from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from pathlib import Path
 
-from make_labs_common_functions import replace_skip, parse_variants_file, lab2_variants_redef
-
-def convert_to_math_unicode_formula(text):
-    #text = text.replace('*', '')
-    text = text.replace('_{1}', '₁')#.replace('_1', '₁')
-    text = text.replace('_{2}', '₂')#.replace('_2', '₂')
-    text = text.replace('_{3}', '₃')#.replace('_3', '₃')
-    text = text.replace('^{2}', '²')#.replace('^2', '²')
-    text = text.replace('^{3}', '³')#.replace('^3', '³')
-    text = text.replace('^{4}', '⁴')#.replace('^4', '⁴')
-    text = text.replace('_{i}', 'ᵢ')#.replace('_i', 'ᵢ')
-    text = text.replace('_{j}', 'ⱼ')#.replace('_j', 'ⱼ')
-    text = text.replace('_{ij}', 'ᵢⱼ')#.replace('_ij', 'ᵢⱼ')
-    text = text.replace('_{2ij}', '₂ᵢⱼ')#.replace('_2ij', '₂ᵢⱼ')
-    text = text.replace("^{'}", "'")
-    
-    return text
+from make_labs_common_functions import replace_skip, convert_to_math_unicode_formula, parse_variants_file, lab2_variants_redef
 
 def make_lab2_variants_and_save_in_docx(variants, year, group, output_file):
     doc = Document()
