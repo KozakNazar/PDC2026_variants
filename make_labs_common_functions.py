@@ -76,11 +76,11 @@ def lab2_variants_redef(variants_data, year, group):
     for v in new_variants_data:
         v['formula'] = replace_skip(v['formula'], '^{2}', '^{2_}', param_G_A, 2 - param_G_B);
         v['formula'] = replace_skip(v['formula'], '^{3}', '^{2}', param_G_A, 2 - param_G_B);
-        v['formula'] = replace_skip(v['formula'], '^{2_}', '^{3}', param_G_A, 2 - param_G_B);
+        v['formula'] = replace_skip(v['formula'], '^{2_}', '^{3}');
         
         v['formula'] = replace_skip(v['formula'], '+', '+_', param_G_C, 2 - param_G_D);
         v['formula'] = replace_skip(v['formula'], '+-', '+', param_G_C, 2 - param_G_D);
-        v['formula'] = replace_skip(v['formula'], '+_', '-', param_G_C, 2 - param_G_D);
+        v['formula'] = replace_skip(v['formula'], '+_', '-');
 
     return new_variants_data
 
