@@ -38,7 +38,7 @@ def make_lab2_simple_variants_and_save_in_docx(variants, year, group, output_fil
     doc.add_paragraph(
         "Задано (вхідні дані):\n"
         "y₁ і y₂ - вектори-стовпці з n елементів,\n"
-        "Y₃ - квадратна матриця порядку n,\n"
+        "Y₃ - квадратна матриця порядку n.\n"
         "yᵀ означає операцію транспонування для y."
     )
     
