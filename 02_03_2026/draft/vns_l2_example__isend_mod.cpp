@@ -198,7 +198,9 @@ int main(int argc, char* argv[])
             PrintMatrixToFile(file, (char*)"Matrix Y3 = ", Y3, n, n);
         }
 
+#ifdef USE_ISEND
         MPI_Request * mpiRequests = new MPI_Request[3LL*n];
+#endif
         for (int i = 0; i < n; ++i)
 #ifdef USE_ISEND
             MPI_Isend(y1[i], 1, MPI_DOUBLE, 1, 0, MPI_COMM_WORLD, mpiRequests + i);
@@ -292,7 +294,9 @@ int main(int argc, char* argv[])
         printf("\nx = ");
         PrintMatrix(x, 1, 1);
 
+#ifdef USE_ISEND
         MPI_Waitall(3*n, mpiRequests, MPI_STATUS_IGNORE);
+#endif
 
         DeleteMatrix(y1, n, 1);
         DeleteMatrix(y2, n, 1);
@@ -371,7 +375,9 @@ int main(int argc, char* argv[])
         // calculation matrix T6 = T4 + T5 = Y3*Y3 + t_y1*y2*Y3 
         SumMatrix(T6, T4, T5, n, n);
 
+#ifdef USE_ISEND
         MPI_Request* mpiRequests = new MPI_Request[n];
+#endif
         for (int i = 0; i < n; ++i)
 #ifdef USE_ISEND
         MPI_Isend(T6[i], n, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, mpiRequests + i);
@@ -398,7 +404,9 @@ int main(int argc, char* argv[])
                 n);
         }
 
+#ifdef USE_ISEND
         MPI_Waitall(n, mpiRequests, MPI_STATUS_IGNORE);
+#endif
 
         DeleteMatrix(y1, n, 1);
         DeleteMatrix(y2, n, 1);
