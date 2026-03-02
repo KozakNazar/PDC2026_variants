@@ -1,0 +1,10 @@
+Title:             Run MPI
+Command:           C:\Windows\System32\cmd.exe
+Arguments:         /k mpiexec -n 4 $(TargetName)
+Initial directory: $(TargetDir)
+
+
+Title:             Run MPI on Single Core
+Command:           C:\Windows\System32\cmd.exe
+Arguments:         /с start /affinity 1 /b /wait cmd /k mpiexec.exe -n 2 $(TargetName)
+Initial directory: $(TargetDir)

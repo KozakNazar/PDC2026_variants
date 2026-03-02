@@ -1,0 +1,56 @@
+#define USE_ISEND
+.
+.
+.
+if (rank == 0){
+    .
+    .
+    .
+    MPI_Request * mpiRequests = new MPI_Request[3LL*n];
+    for (int i = 0; i < n; ++i)
+#ifdef USE_ISEND
+        MPI_Isend(y1[i], 1, MPI_DOUBLE, 1, 0, MPI_COMM_WORLD, mpiRequests + i);
+#else
+        MPI_Send(y1[i], 1, MPI_DOUBLE, 1, 0, MPI_COMM_WORLD);
+#endif
+
+    for (int i = 0; i < n; ++i)
+#ifdef USE_ISEND
+        MPI_Isend(y2[i], 1, MPI_DOUBLE, 1, 0, MPI_COMM_WORLD, mpiRequests + n + i);
+#else
+        MPI_Send(y2[i], 1, MPI_DOUBLE, 1, 0, MPI_COMM_WORLD);
+#endif
+
+    for (int i = 0; i < n; ++i)
+#ifdef USE_ISEND
+        MPI_Isend(Y3[i], n, MPI_DOUBLE, 1, 0, MPI_COMM_WORLD, mpiRequests + 2LL*n + i);
+#else
+    .
+    .
+    .
+    MPI_Waitall(3*n, mpiRequests, MPI_STATUS_IGNORE);
+    DeleteMatrix...
+    .
+    .
+    .
+else if (rank == 1){
+    .
+    .
+    .
+}
+    MPI_Request* mpiRequests = new MPI_Request[n];
+    for (int i = 0; i < n; ++i)
+#ifdef USE_ISEND
+        MPI_Isend(T6[i], n, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, mpiRequests + i);
+#else
+        MPI_Send(T6[i], n, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+#endif
+    .
+    .
+    .
+    MPI_Waitall(n, mpiRequests, MPI_STATUS_IGNORE);
+    DeleteMatrix...
+    .
+    .
+    .
+}
