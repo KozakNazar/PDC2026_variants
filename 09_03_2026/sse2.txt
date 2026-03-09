@@ -1,0 +1,2 @@
+https://github.com/KozakNazar/srcacmlab3/blob/master/acmlab3.cpp
+https://github.com/KozakNazar1/ACM2025/blob/main/labs/acmlab3/acmLab3.pdf
